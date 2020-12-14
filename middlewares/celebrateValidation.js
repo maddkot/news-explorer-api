@@ -93,7 +93,8 @@ const celebrateValidationDeleteArticle = celebrate({
       articleId: Joi.string().required()
         .messages({
           'any.required': 'Поле обязательно!',
-        }).hex(),
+        }).hex()
+        .length(24),
     }),
   }),
 });
