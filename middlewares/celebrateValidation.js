@@ -1,4 +1,5 @@
 const { celebrate, Joi } = require('celebrate');
+const { default: validator } = require('validator');
 
 const celebrateValidationlogin = celebrate({
   body: Joi.object().keys({
@@ -76,11 +77,23 @@ const celebrateValidationCreateArticles = celebrate({
       }),
     link: Joi.string()
       .required()
+      .custom((value, helpers) => {
+        if (!validator.isURL(value)) {
+          return helpers.message('Невалидный формат ссылки link');
+        }
+        return value;
+      })
       .messages({
         'any.required': 'Поле обязательно!',
       }),
     image: Joi.string()
       .required()
+      .custom((value, helpers) => {
+        if (!validator.isURL(value)) {
+          return helpers.message('Невалидный формат ссылки image');
+        }
+        return value;
+      })
       .messages({
         'any.required': 'Поле обязательно!',
       }),
@@ -88,15 +101,13 @@ const celebrateValidationCreateArticles = celebrate({
 });
 
 const celebrateValidationDeleteArticle = celebrate({
-  body: Joi.object().keys({
-    params: Joi.object().keys({
-      articleId: Joi.string().required()
-        .messages({
-          'any.required': 'Поле обязательно!',
-        }).hex()
-        .length(24),
-    }),
+  params: Joi.object().keys({
+    articleId: Joi.string().required().hex()
+      .message('articleId должен содержать только шестнадцатеричные символы')
+      .length(24)
+      .message('Не меньше 24 символов'),
   }),
+
 });
 
 module.exports = {

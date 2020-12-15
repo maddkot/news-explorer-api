@@ -19,8 +19,9 @@ const getUser = (req, res, next) => {
       if (error.kind === 'ObjectId') {
         throw new ValidationError('Нет корректного id');
       }
-      next(error);
-    });
+      throw error;
+    })
+    .catch(next);
 };
 
 const createUser = (req, res, next) => {
